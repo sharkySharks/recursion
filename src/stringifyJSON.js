@@ -4,8 +4,6 @@
 // but you don't so you're going to write it from scratch:
 
 var stringifyJSON = function(obj) {
-  	
-	var g = typeof (obj);
 
 	function stringIT (arg){
 		return ''+arg;
@@ -13,12 +11,12 @@ var stringifyJSON = function(obj) {
 
 	var result = "";
 
-	if (g != 'object' || obj === null){
-		if (g == 'string'){ obj = '"'+obj+'"'}
+	if (typeof obj != 'object' || obj === null){
+		if (typeof obj == 'string'){ obj = '"'+obj+'"'}
 		result += stringIT(obj);
 	} else if (Array.isArray(obj)){
 		if (obj.length < 1){
-				obj = '['+obj+']';
+				obj = '[]';
 				result += stringIT(obj);
 		} else {
 			result += '[';	
@@ -36,19 +34,41 @@ var stringifyJSON = function(obj) {
 				if (i != obj.length-1){
 					result += ',';
 				}
-
 			}
 			result += ']';
 		}	
 		
 	} else if (typeof obj === 'object' && !(Array.isArray(obj))){
+			
+		//keeping track of how many properties are in the object
+			var arrayOfProps = [];
+			for (var prop in obj){
+				arrayOfProps.push(prop);
+			}
+
+
 			if (Object.keys(obj).length === 0){
 				result += '{}';
 			} else {
 				result+= '{';
+				for (var prop in obj){
+					var test = obj[prop];
 
+					if (typeof test === 'string'){
+						result += '"'+prop+'":"'+test+'"'
+					}
+					if (typeof test === 'boolean' || test === null){
+						if (prop != arrayOfProps[arrayOfProps.length-1]) {
+							result += '"'+prop+'":'+test+','
+						} else {
+							result += '"'+prop+'":'+test
+						}
+						
+						
+					} 
 
-			
+				}
+
 				result+= '}';
 			}
 				
