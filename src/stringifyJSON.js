@@ -42,61 +42,48 @@ var stringifyJSON = function(obj) {
 			}
 			result += ']';
 		}
-		
 	} else if (typeof obj === 'object'){
-			
 		//keeping track of how many properties are in the object
-			var arrayOfProps = [];
+		var arrayOfProps = [];
+		for (var prop in obj){
+			arrayOfProps.push(prop);
+		}
+		if (Object.keys(obj).length === 0){
+			result += '{}';
+		} else {
+			result+= '{';
 			for (var prop in obj){
-				arrayOfProps.push(prop);
-			}
+				var test = obj[prop];
 
-			if (Object.keys(obj).length === 0){
-				result += '{}';
-			} else {
-				result+= '{';
-				for (var prop in obj){
-					var test = obj[prop];
-
-					if (typeof test === 'string'){
-						result += '"'+prop+'":"'+test+'"'
-					}
-					if (typeof test === 'boolean' || test === null){
-						if (prop != arrayOfProps[arrayOfProps.length-1]) {
-							result += '"'+prop+'":'+test+','
-						} else {
-							result += '"'+prop+'":'+test
-						}
-					} 
-					if (typeof test === 'object' && !(Array.isArray(test)) && test != null){
-						result += '"'+prop+'":'+stringifyJSON(test);
-					}
-					if ((Array.isArray(test)) || (Array.isArray(obj))) {
-						result += '"'+prop+'":'+stringifyJSON(test);
-					}
-
-
+				if (typeof test === 'string'){
+					result += '"'+prop+'":"'+test+'"'
 				}
+				if (typeof test === 'boolean' || test === null){
+					if (prop != arrayOfProps[arrayOfProps.length-1]) {
+						result += '"'+prop+'":'+test+','
+					} else {
+						result += '"'+prop+'":'+test
+					}
+				} 
 
-				result+= '}';
+				//This next section can be reworked to combine both since code is repeating itself. Will come back to it.
+				if (typeof test === 'object' && !(Array.isArray(test)) && test != null){
+					if (prop != arrayOfProps[arrayOfProps.length-1]) {
+						result += '"'+prop+'":'+stringifyJSON(test)+',';
+					} else {
+						result += '"'+prop+'":'+stringifyJSON(test);
+					}
+				}
+				if ((Array.isArray(test)) || (Array.isArray(obj))) {
+					if (prop != arrayOfProps[arrayOfProps.length-1]) {
+						result += '"'+prop+'":'+stringifyJSON(test)+',';
+					} else {
+						result += '"'+prop+'":'+stringifyJSON(test);
+					}
+				}
 			}
-				
-
-				// if (typeof test === 'object' && !(Array.isArray(test))){
-				// 	if (Object.keys(test).length === 0){
-				// 		obj = '{'+obj+'}';
-				// 	}
-				// 	result += stringifyJSON(obj[i]);
-				// }
-
-
+			result+= '}';
+		}
 	}
-				
 	return result;
-			
-	
-	
-
-	//stringifyJSON()
-
 };
