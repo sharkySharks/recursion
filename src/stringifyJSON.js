@@ -18,7 +18,7 @@ var stringifyJSON = function(obj) {
 		if (obj.length < 1){
 				obj = '[]';
 				result += stringIT(obj);
-		} else if (Array.isArray(obj)){
+		} else {
 			result += '[';	
 			for (var i=0; i<obj.length; i++){
 				var test = obj[i];
@@ -31,12 +31,14 @@ var stringifyJSON = function(obj) {
 				if (Array.isArray(test)){
 					result += stringifyJSON(test);
 				}
+				if (typeof test === 'object' && !(Array.isArray(test))){
+					for (var prop in test){
+						result += '{"'+prop+'":"'+test[prop]+'"}';
+					}
+				}
 				if (i != obj.length-1){
 					result += ',';
 				}
-				// if (typeof test === 'object' ){
-				// 	result += stringifyJSON(test);
-				// }
 			}
 			result += ']';
 		}
